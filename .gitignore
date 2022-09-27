@@ -24,3 +24,7 @@ hs_err_pid*
 
 node_modules/**
 .idea/**
+
+sql-translate-main/
+
+sql-translate-home/node_modules/**
