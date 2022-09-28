@@ -1,9 +1,9 @@
 # 简介
-[Sql-Translation](https://github.com/pdxjie/sql-translation)（简称ST）是一个`Json`转译`SQL`工具，在同类工具的基础上增强了功能，为节省时间、提高工作效率而生
+[Sql-Translation](https://github.com/pdxjie/sql-translate)（简称ST）是一个`Json`转译`SQL`工具，在同类工具的基础上增强了功能，为节省时间、提高工作效率而生
 
 ::: tip 初心
 
-[ST](https://github.com/pdxjie/sql-translation) 的初心就是为了减少一些无必要时间浪费，将精力放在具有价值的工作业务中。
+[ST](https://github.com/pdxjie/sql-translate) 的初心就是为了减少一些无必要时间浪费，将精力放在具有价值的工作业务中。
 
 :::
 ![](../../asset/bac.png)
@@ -24,4 +24,4 @@
 :::
 
 ### 代码托管
-> [GitHub](https://github.com/pdxjie/sql-translation) |  [Gitee](https://github.com/pdxjie/sql-translation)
+> [GitHub](https://github.com/pdxjie/sql-translate) |  [Gitee](https://gitee.com/gao-wumao/sql-transformation)
