@@ -8,7 +8,7 @@ import axios from 'axios';
 // 挂载到vue的全局(原型上),在每个组件都可以使用 ,prototype是固定的,$axios是自定义的
 Vue.prototype.$axios = axios;
 // 指定默认的请求域名
-axios.defaults.baseURL = "http://localhost:8000/"
+axios.defaults.baseURL = "http://localhost:8000"
 Vue.use(Antd)
 new Vue({
   axios,

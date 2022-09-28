@@ -5,6 +5,7 @@
 </template>
 
 <script>
+import { format } from 'sql-formatter';
 import sqlFormatter from 'sql-formatter';
 import * as monaco from "monaco-editor/esm/vs/editor/editor.main";
 import 'monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution';
@@ -53,8 +54,18 @@ export default {
       console.debug("Code editor: content change");
       if (this.editor) {
         if (newValue !== this.editor.getValue()) {
-          this.editor.setValue(newValue);
-          //this.editor.trigger(this.editor.getValue(), 'editor.action.formatDocument')
+          this.editor.setValue(
+            format(newValue, {
+              language: 'sql',
+              tabWidth: 2,
+              keywordCase: 'upper',
+              linesBetweenQueries: 2,
+              indentStyle: 'Standard'
+            }),
+          );
+          // this.editor.setValue(
+          //   format(newValue)
+          // )
           this.editor.getAction(["editor.action.formatDocument"]).run();
         }
       }

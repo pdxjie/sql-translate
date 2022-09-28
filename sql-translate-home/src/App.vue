@@ -133,12 +133,11 @@
 </template>
 
 <script>
+//import { format } from 'sql-formatter';
 import init from './init/initData.json'
 import initJson from './init/createInit.json'
 import updateJson from './init/updateInit.json'
 import InsertJson from './init/insertInit.json'
-import sqlFormatter from 'sql-formatter';
-//import sqlFormatter from 'sql-formatter'
 import MonacoEditorVue from './components/MonacoEditor.vue';
 import GeneratorSql from './components/GeneratorSql.vue'
 import CommonFooter from './components/CommonFooter.vue'
@@ -173,15 +172,13 @@ export default {
         },
       },
       dynamicValidateForm: {
-        domains: [{
-          oldVal:'',
-          newVal:''
-        }],
+        domains: [{}],
       },
     }
   },
   created(){
     this.textarea = JSON.stringify(init,null,4)
+    this.dynamicValidateForm.domains = []
   },
   methods: {
     excelTextChanged(text) {
@@ -189,10 +186,6 @@ export default {
     },
     SqlTextChanged() {
       this.formatSql()
-    },
-    //格式化sql
-    formatSql() {
-      this.sqlTextarea = sqlFormatter.format(this.sqlTextarea);
     },
     replaceKey() {
       this.visible = true
@@ -234,7 +227,8 @@ export default {
       }).then(res=>{
         if (res.data.code === 0) {
           this.sqlTextarea =  res.data.data
-          this.sqlTextarea = sqlFormatter.format(this.sqlTextarea);
+          //this.sqlTextarea = sqlFormatter.format(this.sqlTextarea);
+          console.log(this.sqlTextarea)
           console.log(this.sqlTextarea)
           console.log(res)
         } else {
