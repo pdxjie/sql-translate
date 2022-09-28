@@ -31,7 +31,8 @@ module.exports = {
                     collapsable:false,
                     children:[
                         'grammar',
-                        'replace.md'
+                        'replace',
+                        'complex'
                     ]
                 }
             ]

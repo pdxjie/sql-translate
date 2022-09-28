@@ -89,3 +89,10 @@
 ::: danger 警告
 在 插入（insert into）操作模式中，@pid必须和children数组共同使用，且children数组中存在子数据
 :::
+
+::: tip 复杂需求
+如何想要将一个JSON数组转译生成insert 语句时，我们需要在该数组中的首部或尾部添加一个对象JSON，
+通过使用`@table` 和 `@pid`来设定表名和自定义作为pid的字段。如下所示
+:::
+
+现有一个
