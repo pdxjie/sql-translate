@@ -52,7 +52,7 @@ public class TransFromService {
         int index = 0;
         String createTable = "create table ";
         JSONObject jsonObject = JSONObject.parseObject(textarea);
-        if (replaceForms.size() == 0 || "".equals(replaceForms.get(0).getNewVal())){
+        if (replaceForms.size() == 0){
             //判断是否存在表名
             if (!jsonObject.keySet().contains("@table")){
                 //throw new BusinessException(BaseResponseCode.NOT_EXISTS_TABLE_NAME);
@@ -268,7 +268,7 @@ public class TransFromService {
         Map<String,String> conditionMap = new HashMap<>();
         JSONObject jsonObject = JSONObject.parseObject(textarea);
         //判断是否存在替换属性
-        if (replaceForms.size() == 0 || "".equals(replaceForms.get(0).getNewVal())){
+        if (replaceForms.size() == 0){
             if (!jsonObject.keySet().contains("@table")){
                 return DataResult.getResult(102,"请设置表名称",null);
             }else {
@@ -428,7 +428,7 @@ public class TransFromService {
             jsonObject.remove("@table");
             //没有需要替换的属性
             // || 后面的含义是有空值传入
-            if (replaceForms.size() == 0 || "".equals(replaceForms.get(0).getNewVal())){
+            if (replaceForms.size() == 0){
                 //判断是否存在多级嵌套
                 if (jsonObject.keySet().contains("children")){
                     //如果children数组中没有值，添加了@pid直接去掉
@@ -543,8 +543,19 @@ public class TransFromService {
                 if (replaceMap.keySet().contains("children") || replaceMap.keySet().contains("@pid")){
                     return DataResult.getResult(103,"默认属性不允许被替换！",null);
                 }else {
+                    String pidKey = "";
+                    if (jsonObject.keySet().contains("@pid")){
+                        pidKey = jsonObject.getString("@pid");
+                    }
                     //递归替换属性
                     jsonObject = TranslationOperate.replaceFields(replaceMap,jsonObject);
+                    if (replaceMap.keySet().contains(pidKey)){
+                        jsonObject.put("@pid",replaceMap.get(pidKey));
+                    }else {
+                        if (replaceMap.keySet().size() != 0){
+                            jsonObject.put("@pid",pidKey);
+                        }
+                    }
                     //判断是否存在多级嵌套
                     if (jsonObject.keySet().contains("children")){
                         //如果children数组中没有值，添加了@pid直接去掉
@@ -666,7 +677,7 @@ public class TransFromService {
             });
             for (Object obj : jsonArray) {
                 JSONObject jsonObject = JSONObject.parseObject(obj.toString());
-                if (replaceForms.size() != 0 || !"".equals(replaceForms.get(0).getNewVal())){
+                if (replaceForms.size() != 0){
                     jsonObject = TranslationOperate.replaceFields(replaceMap,jsonObject);
                 }
                 if (jsonObject.keySet().contains("@table")){
@@ -678,7 +689,7 @@ public class TransFromService {
             }
             LinkedHashMap<String,String> resultMap = new LinkedHashMap<>();
             //没有替换值
-            if (replaceForms.size() == 0 || "".equals(replaceForms.get(0).getNewVal())){
+            if (replaceForms.size() == 0){
                 //定位索引，当in = 1 时设置添加属性
                 List<Object> collect = resultArray.stream().filter(bean ->
                        bean.toString().contains("children") &&  !("[]".equals(JSONObject.parseObject(bean.toString()).getString("children")))

@@ -26,5 +26,7 @@ node_modules/**
 .idea/**
 
 sql-translate-main/
-
+sql-translate-main/.idea/**
+sql-translate-main/target/**
 sql-translate-home/node_modules/**
+

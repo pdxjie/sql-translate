@@ -98,10 +98,11 @@ public class TranslationOperate {
                         }
                     }
                 }
+                List<JSONObject> list = new ArrayList<>();
                 for (Object array : jsonArray) {
                     JSONObject children = JSONObject.parseObject(array.toString());
                     JSONObject replaceFields = replaceFields(replaceMap, children);
-                    List<JSONObject> list = new ArrayList<>();
+
                     list.add(replaceFields);
                     result.put("children",list);
                 }
