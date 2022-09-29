@@ -3,7 +3,12 @@
 
 如果你认为该工具对你的工作有所帮助的话，还望路过的你给作者的作品点个**star ⭐** [送你过去](https://github.com/pdxjie/sql-translate)
 
-<h3>Hi，我是派大星</h3>
+# 意见反馈
+欢迎 联系作者 或 [直接提交产品反馈意见](https://support.qq.com/products/435498) <br>
+感激不尽！
+
+# 关于作者
+<h4>Hi，我是派大星</h4>
 
 - 📃<a href="https://blog.csdn.net/Gaowumao?spm=1000.2115.3001.5343">一个19线原创优质编程知识博主</a> 
 - ⚗ <a href="https://gitee.com/gao-wumao">分享个人开源项目作品</a>

@@ -12,9 +12,10 @@ module.exports = {
         nav: [
             { text: '首页', link: '/' },
             { text: '快速入门', link: '/pages/' },
-            { text: '💖产品反馈', link: 'https://support.qq.com/products/435498' },
+            { text: '项目', link: '/core/' },
+            { text: '💖意见反馈', link: 'https://support.qq.com/products/435498' },
             { text: '🌏GitHub', link: 'https://github.com/pdxjie/sql-translate' },
-            { text: '实践操作', link: 'http://www.json-sql.com' },
+            { text: '在线访问', link: 'http://www.json-sql.com'},
         ],
         sidebar:{
             '/pages/':[
@@ -41,6 +42,16 @@ module.exports = {
                     collapsable:false,
                     children:[
                         'talk'
+                    ]
+                }
+            ],
+            '/core/':[
+                {
+                    title: '整体分析',
+                    collapsable:false,
+                    sidebarDepth: 3,
+                    children:[
+                        '',
                     ]
                 }
             ]
