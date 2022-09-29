@@ -32,7 +32,7 @@
 ```shell
 git clone https://github.com/pdxjie/sql-translate.git
 ```
-2. 进入目录，按照依赖
+2. 进入目录，安装依赖
 ```shell
 cd sql-translate-home
 yarn install
