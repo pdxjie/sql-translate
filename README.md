@@ -13,9 +13,9 @@
 # 解决痛点
 
 下面就让我来给大家介绍一下[ST](https://github.com/pdxjie/sql-translate) 可以解决哪些痛点问题：
-- 需要将大量JSON中的数据导入到数据库中，但是JSON中包含大量父子嵌套关系 ——> [可以使用本站](https://github.com/pdxjie/sql-translation)
-- 在进行JSON数据导入数据库时，遇到JSON字段与数据库字段不一致需要替换字段时 ——> [可以使用本站](https://github.com/pdxjie/sql-translation)
-- 根据Apifox工具来实现更新或新增接口（前提是对接口已经完成了设计工作），提供了Body体数据，而且不想手动编写SQL时 ——> [可以使用本站](https://github.com/pdxjie/sql-translation)
+- 需要将大量JSON中的数据导入到数据库中，但是JSON中包含大量父子嵌套关系 ——> [可以使用本站](http://www.json-sql.online/)
+- 在进行JSON数据导入数据库时，遇到JSON字段与数据库字段不一致需要替换字段时 ——> [可以使用本站](http://www.json-sql.online/)
+- 根据Apifox工具来实现更新或新增接口（前提是对接口已经完成了设计工作），提供了Body体数据，而且不想手动编写SQL时 ——> [可以使用本站](http://www.json-sql.online/)
 对上述三点进行进行举例说明（按照顺序）：
 
 第一种情况：
