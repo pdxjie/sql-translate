@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-
     <a-layout id="components-layout-demo-fixed">
     <a-layout-header class="header" :style="{ position: 'fixed', zIndex: 1, width: '100%'}">
       <h1 class="title"> 🛠 多功能SQL生成器</h1>
@@ -133,14 +132,15 @@
 </template>
 
 <script>
-//import { format } from 'sql-formatter';
 import init from './init/initData.json'
 import initJson from './init/createInit.json'
 import updateJson from './init/updateInit.json'
 import InsertJson from './init/insertInit.json'
-import MonacoEditorVue from './components/MonacoEditor.vue';
+import MonacoEditorVue from './components/MonacoEditor.vue'
 import GeneratorSql from './components/GeneratorSql.vue'
 import CommonFooter from './components/CommonFooter.vue'
+import { transfromRequest } from "@/api/baseApi"
+import { INIT, INSERT, UPDATE } from "@/constant/baseConstant"
 export default {
   name: 'App',
   components: {
@@ -150,10 +150,10 @@ export default {
 },
   data() {
     return {
-      sqlTextarea:"",
-      transFrom:{},
-      type:'',
-      textarea: "",
+      sqlTextarea: '',
+      transFrom: {},
+      type: '',
+      textarea: '',
       visible: false,
       formItemLayout: {
         labelCol: {
@@ -176,66 +176,69 @@ export default {
       },
     }
   },
-  created(){
-    this.textarea = JSON.stringify(init,null,4)
+  created () {
+    this.textarea = JSON.stringify(init, null, 4)
     this.dynamicValidateForm.domains = []
   },
   methods: {
-    excelTextChanged(text) {
+    excelTextChanged (text) {
       this.textarea = text
     },
-    SqlTextChanged() {
+    SqlTextChanged () {
       this.formatSql()
     },
-    replaceKey() {
+    replaceKey () {
       this.visible = true
     },
-    onClose() {
+    onClose () {
       this.visible = false;
     },
-    removeDomain(item) {
+    removeDomain (item) {
       let index = this.dynamicValidateForm.domains.indexOf(item);
       if (index !== -1) {
         this.dynamicValidateForm.domains.splice(index, 1);
       }
     },
-    addDomain() {
+    addDomain () {
       this.dynamicValidateForm.domains.push({
       });
     },
-    replaceOldKey(){
+    replaceOldKey (){
       this.visible = false
     },
-    handleChange(val){
+    handleChange (val) {
       this.type = val
     },
-    mockChange(val) {
-      if (val === '1') {//insert
-        this.textarea = JSON.stringify(InsertJson,null,4)
-      } else if (val == '2') {//insert
-        this.textarea = JSON.stringify(updateJson,null,4)
-      } else if (val === '3') {
-        this.textarea = JSON.stringify(initJson,null,4)
+    mockChange (val) {
+      switch (val) {
+        case INIT:
+          this.textarea = JSON.stringify(initJson,null,4)
+          break;
+        case INSERT:
+          this.textarea = JSON.stringify(InsertJson,null,4)
+          break;
+        case UPDATE:
+          this.textarea = JSON.stringify(updateJson,null,4)
+          break;
       }
     },
     //转译SQL
-    generatorSql() {
-      this.$axios.post('/transform',  {
+    generatorSql () {
+      const trasfromData = {
         textarea: this.textarea,
         type: this.type,
-        domains:this.dynamicValidateForm.domains
-      }).then(res=>{
-        if (res.data.code === 0) {
-          this.sqlTextarea =  res.data.data
-          //this.sqlTextarea = sqlFormatter.format(this.sqlTextarea);
-          console.log(this.sqlTextarea)
-          console.log(this.sqlTextarea)
-          console.log(res)
+        domains: this.dynamicValidateForm.domains
+      }
+      transfromRequest(trasfromData).then(res => {
+        console.log(res)
+        if (res.code === 0) {
+          this.sqlTextarea =  res.data
+          this.dynamicValidateForm.domains = []
         } else {
+          console.log(res.data)
           this.$message.warn(res.data.msg)
         }
       })
-      this.dynamicValidateForm.domains = []
     },
   }
 }
@@ -295,5 +298,4 @@ export default {
 /deep/ .ant-select-selection__rendered {
     line-height: 37px;
 }
-
 </style>
