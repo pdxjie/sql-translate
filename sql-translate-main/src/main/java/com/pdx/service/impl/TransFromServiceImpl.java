@@ -15,6 +15,8 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.pdx.constant.FiledConstant.*;
+
 /**
  * @Author: IT 派同学
  * @DateTime: 2023/11/20
@@ -54,24 +56,24 @@ public class TransFromServiceImpl implements TransFromService {
      */
     private Result<?> getCreateSql(String textarea, List<ReplaceFieldVo> replaceForms) {
         int index = 0;
-        StringBuilder createTable = new StringBuilder("create table ");
+        StringBuilder createTable = new StringBuilder(CREATE_TABLE);
         JSONObject jsonObject = JSONObject.parseObject(textarea);
         if (replaceForms.isEmpty()) {
             // 判断是否存在表名
-            if (!jsonObject.keySet().contains("@table")) {
+            if (!jsonObject.keySet().contains(TABLE_NAME)) {
                 return Result.fail(ResponseCode.PLEASE_SET_UP_TABLE_NAME);
             } else {
-                createTable.append("`").append(jsonObject.get("@table").toString()).append("`(");
+                createTable.append("`").append(jsonObject.get(TABLE_NAME).toString()).append("`(");
                 // 移除表名
-                jsonObject.remove("@table");
+                jsonObject.remove(TABLE_NAME);
                 // 用来判断是否是最后一个字段，最后一个字段不加逗号结尾
                 int count = jsonObject.keySet().size();
                 for (String key : jsonObject.keySet()) {
                     index += 1;
-                    if (!key.contains("@")) {
+                    if (!key.contains(FILED_AID)) {
                         return Result.fail(ResponseCode.LACK_FILED_LENGTH);
                     }
-                    String[] split = key.split("@");
+                    String[] split = key.split(FILED_AID);
 
                     if (split.length == 1 || StringUtils.isEmpty(split[1]) || " ".equalsIgnoreCase(split[1])) {
                         return Result.fail(ResponseCode.LACK_FILED_LENGTH);
@@ -79,7 +81,7 @@ public class TransFromServiceImpl implements TransFromService {
                         return Result.fail(ResponseCode.FILED_MUST_BE_INTEGER);
                     }
                     String value = "";
-                    if (!"children".equalsIgnoreCase(key.split("@")[0])) {
+                    if (!CHILDREN_FILED.equalsIgnoreCase(key.split(FILED_AID)[0])) {
                         value = (String) jsonObject.get(key);
                     }
                     // 判断 key 中是否存在 id 属性，默认 id 属性为主键
@@ -87,12 +89,12 @@ public class TransFromServiceImpl implements TransFromService {
                     if (value.matches("[0-9]+") && value.length() <= 2) {
                         //新增children start
                         if ((index + 1) - count == 1) {
-                            if ("children".equalsIgnoreCase(split[0])) {
-                                createTable.append("`pid`" + " varchar(").append(split[1]).append(") ");
+                            if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                createTable.append(PID_FILED + " varchar(").append(split[1]).append(") ");
                             }
                         } else {
-                            if ("children".equalsIgnoreCase(split[0])) {
-                                createTable.append("`pid`" + " varchar(").append(split[1]).append("), ");
+                            if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                createTable.append(PID_FILED + " varchar(").append(split[1]).append("), ");
                             }
                         }
                         // 新增 children end
@@ -112,12 +114,12 @@ public class TransFromServiceImpl implements TransFromService {
                     } else {
                         // 新增 children start
                         if ((index + 1) - count == 1) {
-                            if ("children".equalsIgnoreCase(split[0])) {
-                                createTable.append("`pid`" + " varchar(").append(split[1]).append(") ");
+                            if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                createTable.append(PID_FILED + " varchar(").append(split[1]).append(") ");
                             }
                         } else {
-                            if ("children".equalsIgnoreCase(split[0])) {
-                                createTable.append("`pid`" + " varchar(").append(split[1]).append("), ");
+                            if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                createTable.append(PID_FILED + " varchar(").append(split[1]).append("), ");
                             }
                         }
                         //新增children  end
@@ -144,32 +146,32 @@ public class TransFromServiceImpl implements TransFromService {
                 replaceMap.put(replaceForm.getOldVal(), replaceForm.getNewVal());
             });
             // children 不能修改
-            if (replaceMap.keySet().contains("children")) {
+            if (replaceMap.keySet().contains(CHILDREN_FILED)) {
                 return Result.fail(ResponseCode.DEFAULT_ATTRIBUTE_UNABLE_TO_CHANGED);
             }
             // 判断是否存在表名
-            if (!jsonObject.keySet().contains("@table")) {
+            if (!jsonObject.keySet().contains(TABLE_NAME)) {
                 return Result.fail(ResponseCode.PLEASE_SET_UP_TABLE_NAME);
             } else {
-                createTable.append("`").append(jsonObject.get("@table").toString()).append("`(");
+                createTable.append("`").append(jsonObject.get(TABLE_NAME).toString()).append("`(");
                 // 移除表名
-                jsonObject.remove("@table");
+                jsonObject.remove(TABLE_NAME);
                 // 用来判断是否是最后一个字段，最后一个字段不加逗号结尾
                 int count = jsonObject.keySet().size();
                 for (String key : jsonObject.keySet()) {
                     index += 1;
                     // 判断是否设置字段长度
-                    if (!key.contains("@")) {
+                    if (!key.contains(FILED_AID)) {
                         return Result.fail(ResponseCode.LACK_FILED_LENGTH);
                     }
-                    String[] split = key.split("@");
+                    String[] split = key.split(FILED_AID);
                     if (split.length == 1 || StringUtils.isEmpty(split[1]) || " ".equalsIgnoreCase(split[1])) {
                         return Result.fail(ResponseCode.LACK_FILED_LENGTH);
                     } else if (!split[1].matches("[0-9]+")) {
                         return Result.fail(ResponseCode.FILED_MUST_BE_INTEGER);
                     }
                     String value = "";
-                    if (!"children".equalsIgnoreCase(key.split("@")[0])) {
+                    if (!CHILDREN_FILED.equalsIgnoreCase(key.split(FILED_AID)[0])) {
                         value = (String) jsonObject.get(key);
                     }
                     if (replaceMap.containsKey(split[0])) {
@@ -177,12 +179,12 @@ public class TransFromServiceImpl implements TransFromService {
                         if (value.matches("[0-9]+") && value.length() <= 2) {
                             // 新增 children start
                             if ((index + 1) - count == 1) {
-                                if ("children".equalsIgnoreCase(split[0])) {
-                                    createTable.append("`pid`" + " varchar(").append(split[1]).append(") ");
+                                if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                    createTable.append(PID_FILED + " varchar(").append(split[1]).append(") ");
                                 }
                             } else {
-                                if ("children".equalsIgnoreCase(split[0])) {
-                                    createTable.append("`pid`" + " varchar(").append(split[1]).append("), ");
+                                if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                    createTable.append(PID_FILED + " varchar(").append(split[1]).append("), ");
                                 }
                             }
                             // 新增 children end
@@ -195,12 +197,12 @@ public class TransFromServiceImpl implements TransFromService {
 
                             // 新增 children start
                             if ((index + 1) - count == 1) {
-                                if ("children".equalsIgnoreCase(split[0])) {
-                                    createTable.append("`pid`" + " varchar(").append(split[1]).append(") ");
+                                if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                    createTable.append(PID_FILED + " varchar(").append(split[1]).append(") ");
                                 }
                             } else {
-                                if ("children".equalsIgnoreCase(split[0])) {
-                                    createTable.append("`pid`" + " varchar(").append(split[1]).append("), ");
+                                if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                    createTable.append(PID_FILED + " varchar(").append(split[1]).append("), ");
                                 }
                             }
                             // 新增 children end
@@ -214,12 +216,12 @@ public class TransFromServiceImpl implements TransFromService {
                         if (value.matches("[0-9]+") && value.length() <= 2) {
                             // 新增 children start
                             if ((index + 1) - count == 1) {
-                                if ("children".equalsIgnoreCase(split[0])) {
-                                    createTable.append("`pid`" + " varchar(").append(split[1]).append(") ");
+                                if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                    createTable.append(PID_FILED + " varchar(").append(split[1]).append(") ");
                                 }
                             } else {
-                                if ("children".equalsIgnoreCase(split[0])) {
-                                    createTable.append("`pid`" + " varchar(").append(split[1]).append("), ");
+                                if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                    createTable.append(PID_FILED + " varchar(").append(split[1]).append("), ");
                                 }
                             }
                             //新增children  end
@@ -231,12 +233,12 @@ public class TransFromServiceImpl implements TransFromService {
                         } else {
                             // 新增 children start
                             if ((index + 1) - count == 1) {
-                                if ("children".equalsIgnoreCase(split[0])) {
-                                    createTable.append("`pid`" + " varchar(").append(split[1]).append(") ");
+                                if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                    createTable.append(PID_FILED + " varchar(").append(split[1]).append(") ");
                                 }
                             } else {
-                                if ("children".equalsIgnoreCase(split[0])) {
-                                    createTable.append("`pid`" + " varchar(").append(split[1]).append("), ");
+                                if (CHILDREN_FILED.equalsIgnoreCase(split[0])) {
+                                    createTable.append(PID_FILED + " varchar(").append(split[1]).append("), ");
                                 }
                             }
                             //新增children  end
@@ -269,12 +271,12 @@ public class TransFromServiceImpl implements TransFromService {
         JSONObject jsonObject = JSONObject.parseObject(textarea);
         // 判断是否存在替换属性
         if (replaceForms.isEmpty()) {
-            if (!jsonObject.keySet().contains("@table")) {
+            if (!jsonObject.keySet().contains(TABLE_NAME)) {
                  return Result.fail(ResponseCode.PLEASE_SET_UP_TABLE_NAME);
             } else {
-                updateSql.append("`").append(jsonObject.get("@table").toString()).append("` ");
+                updateSql.append("`").append(jsonObject.get(TABLE_NAME).toString()).append("` ");
                 // 移除表名
-                jsonObject.remove("@table");
+                jsonObject.remove(TABLE_NAME);
                 // 判断是否存在更新条件
                 List<String> condition = jsonObject.keySet().stream().filter(key ->
                         key.contains("#")
@@ -313,12 +315,12 @@ public class TransFromServiceImpl implements TransFromService {
                 replaceMap.put(replaceForm.getOldVal(), replaceForm.getNewVal());
             });
             // 是否存在表名
-            if (!jsonObject.containsKey("@table")) {
+            if (!jsonObject.containsKey(TABLE_NAME)) {
                  return Result.fail(ResponseCode.PLEASE_SET_UP_TABLE_NAME);
             } else {
-                updateSql.append("`").append(jsonObject.get("@table").toString()).append("` ");
+                updateSql.append("`").append(jsonObject.get(TABLE_NAME).toString()).append("` ");
                 // 移除表名
-                jsonObject.remove("@table");
+                jsonObject.remove(TABLE_NAME);
                 // 替换属性
                 JSONObject result = new JSONObject();
                 for (String key : jsonObject.keySet()) {
@@ -419,21 +421,21 @@ public class TransFromServiceImpl implements TransFromService {
         if (!textarea.startsWith("[")) { // 说明是 JsonObject
             JSONObject jsonObject = JSONObject.parseObject(textarea);
             // 判断是否存在表
-            if (jsonObject.containsKey("@table")) {
-                insertSql.append("`").append(jsonObject.get("@table")).append("` (");
+            if (jsonObject.containsKey(TABLE_NAME)) {
+                insertSql.append("`").append(jsonObject.get(TABLE_NAME)).append("` (");
             } else {
                  return Result.fail(ResponseCode.PLEASE_SET_UP_TABLE_NAME);
             }
             // 移除 @table
-            jsonObject.remove("@table");
+            jsonObject.remove(TABLE_NAME);
             // 没有需要替换的属性
             // || 后面的含义是有空值传入
             if (replaceForms.isEmpty()) {
                 // 判断是否存在多级嵌套
-                if (jsonObject.containsKey("children")) {
+                if (jsonObject.containsKey(CHILDREN_FILED)) {
                     // 如果 children 数组中没有值，添加了 @pid 直接去掉
-                    if ("[]".equalsIgnoreCase(jsonObject.get("children").toString())) { //存在 children，但 children 数组中不存在值
-                        jsonObject.remove("children");
+                    if ("[]".equalsIgnoreCase(jsonObject.get(CHILDREN_FILED).toString())) { //存在 children，但 children 数组中不存在值
+                        jsonObject.remove(CHILDREN_FILED);
                         if (jsonObject.containsKey("@pid")) {
                             // 如果存在则移除
                             jsonObject.remove("@pid");
@@ -465,14 +467,14 @@ public class TransFromServiceImpl implements TransFromService {
                     } else {
                         if (jsonObject.containsKey("@pid")) {
                             JSONArray resultArray = new JSONArray();
-                            String children = jsonObject.get("children").toString();
+                            String children = jsonObject.get(CHILDREN_FILED).toString();
                             resultArray = JSONArray.parseArray(children);
-                            jsonObject.remove("children");
+                            jsonObject.remove(CHILDREN_FILED);
                             LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
                             // 将 key 存入 linkedHashMap 中保证插入字段的顺序
                             for (String key : jsonObject.keySet()) {
                                 if (key.equalsIgnoreCase("@pid")) {
-                                    linkedHashMap.put(key.replace("@", ""), "0");
+                                    linkedHashMap.put(key.replace(FILED_AID, ""), "0");
                                 } else {
                                     linkedHashMap.put(key, jsonObject.getString(key));
                                 }
@@ -539,7 +541,7 @@ public class TransFromServiceImpl implements TransFromService {
                 replaceForms.forEach(replaceForm -> {
                     replaceMap.put(replaceForm.getOldVal(), replaceForm.getNewVal());
                 });
-                if (replaceMap.containsKey("children") || replaceMap.containsKey("@pid")) {
+                if (replaceMap.containsKey(CHILDREN_FILED) || replaceMap.containsKey("@pid")) {
                     return Result.fail(ResponseCode.DEFAULT_ATTRIBUTE_UNABLE_TO_CHANGED);
                 } else {
                     String pidKey = "";
@@ -556,10 +558,10 @@ public class TransFromServiceImpl implements TransFromService {
                         }
                     }
                     // 判断是否存在多级嵌套
-                    if (jsonObject.containsKey("children")) {
+                    if (jsonObject.containsKey(CHILDREN_FILED)) {
                         // 如果 children 数组中没有值，添加了 @pid 直接去掉
-                        if ("[]".equalsIgnoreCase(jsonObject.get("children").toString())) {//存在children，但children数组中不存在值
-                            jsonObject.remove("children");
+                        if ("[]".equalsIgnoreCase(jsonObject.get(CHILDREN_FILED).toString())) {//存在children，但children数组中不存在值
+                            jsonObject.remove(CHILDREN_FILED);
                             if (jsonObject.containsKey("@pid")) {
                                 // 如果存在则移除
                                 jsonObject.remove("@pid");
@@ -591,14 +593,14 @@ public class TransFromServiceImpl implements TransFromService {
                         } else {
                             if (jsonObject.containsKey("@pid")) {
                                 JSONArray resultArray = new JSONArray();
-                                String children = jsonObject.get("children").toString();
+                                String children = jsonObject.get(CHILDREN_FILED).toString();
                                 resultArray = JSONArray.parseArray(children);
-                                jsonObject.remove("children");
+                                jsonObject.remove(CHILDREN_FILED);
                                 LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
                                 // 将 key 存入 linkedHashMap 中保证插入字段的顺序
                                 for (String key : jsonObject.keySet()) {
                                     if (key.equalsIgnoreCase("@pid")) {
-                                        linkedHashMap.put(key.replace("@", ""), "0");
+                                        linkedHashMap.put(key.replace(FILED_AID, ""), "0");
                                     } else {
                                         linkedHashMap.put(key, jsonObject.getString(key));
                                     }
@@ -666,7 +668,7 @@ public class TransFromServiceImpl implements TransFromService {
             JSONArray jsonArray = JSONArray.parseArray(textarea);
             JSONArray resultArray = new JSONArray();
             JSONObject tableObject = null;
-            if (!jsonArray.toString().contains("@table")) {
+            if (!jsonArray.toString().contains(TABLE_NAME)) {
                 return Result.fail(ResponseCode.PLEASE_SET_UP_TABLE_NAME);
             }
             Map<String, String> replaceMap = new HashMap<>();
@@ -678,8 +680,8 @@ public class TransFromServiceImpl implements TransFromService {
                 if (!replaceForms.isEmpty()) {
                     jsonObject = TranslationOperate.replaceFields(replaceMap, jsonObject);
                 }
-                if (jsonObject.containsKey("@table")) {
-                    insertSql.append(jsonObject.getString("@table")).append(" (");
+                if (jsonObject.containsKey(TABLE_NAME)) {
+                    insertSql.append(jsonObject.getString(TABLE_NAME)).append(" (");
                     tableObject = jsonObject;
                 } else {
                     resultArray.add(jsonObject);
@@ -690,7 +692,7 @@ public class TransFromServiceImpl implements TransFromService {
             if (replaceForms.isEmpty()) {
                 // 定位索引，当 in = 1 时设置添加属性
                 List<Object> collect = resultArray.stream().filter(bean ->
-                        bean.toString().contains("children") && !("[]".equalsIgnoreCase(JSONObject.parseObject(bean.toString()).getString("children")))
+                        bean.toString().contains(CHILDREN_FILED) && !("[]".equalsIgnoreCase(JSONObject.parseObject(bean.toString()).getString(CHILDREN_FILED)))
                 ).collect(Collectors.toList());
                 // 不是 0 说明包含父子级嵌套
                 if (!collect.isEmpty()) {
@@ -700,11 +702,11 @@ public class TransFromServiceImpl implements TransFromService {
                     // 设置属性
                     JSONObject jsonObject = JSONObject.parseObject(collect.get(0).toString());
                     int count = 0;
-                    if (jsonObject.containsKey("children")) {
+                    if (jsonObject.containsKey(CHILDREN_FILED)) {
                         count = jsonObject.size() - 1;
                     }
                     for (String key : jsonObject.keySet()) {
-                        if (!"children".equalsIgnoreCase(key)) {
+                        if (!CHILDREN_FILED.equalsIgnoreCase(key)) {
                             resultMap.put(key, jsonObject.getString(key));
                             index += 1;
 
@@ -720,7 +722,7 @@ public class TransFromServiceImpl implements TransFromService {
                     }
                 } else {
                     JSONObject jsonObject = JSONObject.parseObject(jsonArray.get(0).toString());
-                    jsonObject.remove("children");
+                    jsonObject.remove(CHILDREN_FILED);
                     // 设置属性
                     int count = jsonObject.keySet().size();
                     index = 0;
@@ -741,10 +743,10 @@ public class TransFromServiceImpl implements TransFromService {
                     JSONObject jsonObject = JSONObject.parseObject(obj.toString());
 
                     // 如果每个 JSON 对象中的 children 数组为空或者不存在 children
-                    if (!jsonObject.containsKey("children") || "[]".equalsIgnoreCase(jsonObject.get("children").toString())) {
+                    if (!jsonObject.containsKey(CHILDREN_FILED) || "[]".equalsIgnoreCase(jsonObject.get(CHILDREN_FILED).toString())) {
                         // 如果为空就移除 children 数组
-                        if (jsonObject.containsKey("children")) {
-                            jsonObject.remove("children");
+                        if (jsonObject.containsKey(CHILDREN_FILED)) {
+                            jsonObject.remove(CHILDREN_FILED);
                         }
                         int count = jsonObject.keySet().size();
                         // 设置插入的值
@@ -798,17 +800,17 @@ public class TransFromServiceImpl implements TransFromService {
                                 insertSql.append("\'").append(value).append("\' ,");
                             }
                         }
-                        sql += TranslationOperate.getChildrenSql(pid, JSONArray.parseArray(jsonObject.get("children").toString()), resultMap, tableObject.getString("@pid"));
+                        sql += TranslationOperate.getChildrenSql(pid, JSONArray.parseArray(jsonObject.get(CHILDREN_FILED).toString()), resultMap, tableObject.getString("@pid"));
                         insertSql.append(sql);
                     }
                 }
             } else { // 存在替换值
-                if (replaceMap.containsKey("children") || replaceMap.containsKey("@pid")) {
+                if (replaceMap.containsKey(CHILDREN_FILED) || replaceMap.containsKey("@pid")) {
                     return Result.fail(ResponseCode.DEFAULT_ATTRIBUTE_UNABLE_TO_CHANGED);
                 } else {
                     // 定位索引，当 in = 1 时设置添加属性
                     List<Object> collect = resultArray.stream().filter(bean ->
-                            bean.toString().contains("children") && !("[]".equalsIgnoreCase(JSONObject.parseObject(bean.toString()).getString("children")))
+                            bean.toString().contains(CHILDREN_FILED) && !("[]".equalsIgnoreCase(JSONObject.parseObject(bean.toString()).getString(CHILDREN_FILED)))
                     ).collect(Collectors.toList());
                     // 不是 0 说明包含父子级嵌套
                     if (!collect.isEmpty()) {
@@ -818,11 +820,11 @@ public class TransFromServiceImpl implements TransFromService {
                         // 设置属性
                         JSONObject jsonObject = JSONObject.parseObject(collect.get(0).toString());
                         int count = 0;
-                        if (jsonObject.containsKey("children")) {
+                        if (jsonObject.containsKey(CHILDREN_FILED)) {
                             count = jsonObject.size() - 1;
                         }
                         for (String key : jsonObject.keySet()) {
-                            if (!"children".equalsIgnoreCase(key)) {
+                            if (!CHILDREN_FILED.equalsIgnoreCase(key)) {
                                 resultMap.put(key, jsonObject.getString(key));
                                 index += 1;
                                 // 最后一个属性
@@ -837,7 +839,7 @@ public class TransFromServiceImpl implements TransFromService {
                         }
                     } else {
                         JSONObject jsonObject = JSONObject.parseObject(jsonArray.get(0).toString());
-                        jsonObject.remove("children");
+                        jsonObject.remove(CHILDREN_FILED);
                         //设置属性
                         int count = jsonObject.keySet().size();
                         index = 0;
@@ -857,10 +859,10 @@ public class TransFromServiceImpl implements TransFromService {
                         in += 1;
                         JSONObject jsonObject = JSONObject.parseObject(obj.toString());
                         // 如果每个 JSON 对象中的 children 数组为空或者不存在 children
-                        if (!jsonObject.containsKey("children") || "[]".equalsIgnoreCase(jsonObject.get("children").toString())) {
+                        if (!jsonObject.containsKey(CHILDREN_FILED) || "[]".equalsIgnoreCase(jsonObject.get(CHILDREN_FILED).toString())) {
                             // 如果为空就移除 children 数组
-                            if (jsonObject.containsKey("children")) {
-                                jsonObject.remove("children");
+                            if (jsonObject.containsKey(CHILDREN_FILED)) {
+                                jsonObject.remove(CHILDREN_FILED);
                             }
                             int count = jsonObject.keySet().size();
                             // 设置插入的值
@@ -914,7 +916,7 @@ public class TransFromServiceImpl implements TransFromService {
                                     insertSql.append("\'").append(value).append("\' ,");
                                 }
                             }
-                            sql += TranslationOperate.getChildrenSql(pid, JSONArray.parseArray(jsonObject.get("children").toString()), resultMap, tableObject.getString("@pid"));
+                            sql += TranslationOperate.getChildrenSql(pid, JSONArray.parseArray(jsonObject.get(CHILDREN_FILED).toString()), resultMap, tableObject.getString("@pid"));
                             insertSql.append(sql);
 
                         }
