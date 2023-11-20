@@ -1,18 +1,17 @@
 package com.pdx.controller;
 
+import com.pdx.exception.ResponseCode;
+import com.pdx.exception.Result;
 import com.pdx.model.vo.TransFromVo;
-import com.pdx.common.DataResult;
 import com.pdx.service.TransFromService;
-import com.pdx.service.impl.TransFromServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * @Author: GCJ
- * @Date: 2022/9/20 15:08:26
- * @Description: 转换前端控制器
+ * @Author: IT 派同学
+ * @DateTime: 2023/11/20
+ * @Description:
  */
 @CrossOrigin
 @RestController
@@ -23,9 +22,9 @@ public class TransFormController {
     private TransFromService transFromService;
 
     @PostMapping("/transform")
-    public DataResult doTransForm(@RequestBody(required = false) TransFromVo transFrom) throws Exception {
+    public Result<?> doTransForm(@RequestBody(required = false) TransFromVo transFrom) throws Exception {
         if (StringUtils.isEmpty(transFrom.getTextarea())){
-            return DataResult.getResult(100,"请补充需要转译的JSON语句块",null);
+            return Result.fail(ResponseCode.PLEASE_SUPPLEMENT_NEED_TRANSFORM_DATA);
         }
         return transFromService.transformSql(transFrom);
     }

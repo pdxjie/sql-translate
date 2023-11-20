@@ -1,6 +1,6 @@
 package com.pdx.service;
 
-import com.pdx.common.DataResult;
+import com.pdx.exception.Result;
 import com.pdx.model.vo.TransFromVo;
 
 /**
@@ -10,5 +10,5 @@ import com.pdx.model.vo.TransFromVo;
  */
 public interface TransFromService {
 
-    DataResult transformSql(TransFromVo transFrom) throws Exception;
+    Result<?> transformSql(TransFromVo transFrom) throws Exception;
 }
