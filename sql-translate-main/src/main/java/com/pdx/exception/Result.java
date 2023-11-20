@@ -52,10 +52,6 @@ public class Result<T> implements Serializable {
         return new Result<T>(ResponseCode.SUCCESS.getCode());
     }
 
-    public static <T>Result<T> success (String message) {
-        return new Result<T>(ResponseCode.SUCCESS.getCode(), message);
-    }
-
     public static <T>Result<T> success (T data) {
         return new Result<T>(ResponseCode.SUCCESS.getCode(), ResponseCode.SUCCESS.getMessage(), data);
     }
