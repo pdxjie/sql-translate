@@ -1,11 +1,11 @@
-package com.pdx.res;
+package com.pdx.common;
 
 import lombok.Data;
 
 /**
- * @Author: GCJ
- * @Date: 2022/9/21 12:36:17
- * @Description: HOW TODO
+ * @Author: IT 派同学
+ * @DateTime: 2023/11/20
+ * @Description: 公共响应类
  */
 @Data
 public class DataResult<T> {

@@ -1,8 +1,9 @@
 package com.pdx.controller;
 
-import com.pdx.entity.TransFrom;
-import com.pdx.res.DataResult;
+import com.pdx.model.vo.TransFromVo;
+import com.pdx.common.DataResult;
 import com.pdx.service.TransFromService;
+import com.pdx.service.impl.TransFromServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -15,19 +16,17 @@ import org.springframework.web.bind.annotation.*;
  */
 @CrossOrigin
 @RestController
-@RequestMapping("/")
-@Slf4j
+@RequestMapping("v1")
 public class TransFormController {
 
     @Autowired
     private TransFromService transFromService;
 
     @PostMapping("/transform")
-    public DataResult doTransForm(@RequestBody(required = false)TransFrom transFrom) throws Exception {
+    public DataResult doTransForm(@RequestBody(required = false) TransFromVo transFrom) throws Exception {
         if (StringUtils.isEmpty(transFrom.getTextarea())){
             return DataResult.getResult(100,"请补充需要转译的JSON语句块",null);
         }
-        DataResult dataResult = transFromService.transformSql(transFrom);
-        return dataResult;
+        return transFromService.transformSql(transFrom);
     }
 }

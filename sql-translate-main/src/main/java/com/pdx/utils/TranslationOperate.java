@@ -10,18 +10,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author 派 大 星
- * @function
- * @date 2022/9/26 22:54
- * @website https://blog.csdn.net/Gaowumao
+ * @Author: IT 派同学
+ * @DateTime: 2023/11/20
+ * @Description: 抽离方法
  */
 @Slf4j
 public class TranslationOperate {
 
 
     /**
-     * JsonObject递归替换属性
-     * 当@pid所指向的字段被替换，那么@pid的value也将随之被替换
+     * JsonObject 递归替换属性
+     * 当 @pid 所指向的字段被替换，那么 @pid 的 value 也将随之被替换
      * @param replaceMap
      * @param jsonObject
      * @return
@@ -116,10 +115,10 @@ public class TranslationOperate {
 
     /**
      * 获取子语句
-     * @param pid pid值
+     * @param pid pid 值
      * @param resultArray
      * @param linkedHashMap
-     * @param pidKey pid对应的key
+     * @param pidKey pid对应的 key
      * @return
      */
     public static String getChildrenSql(String pid, JSONArray resultArray, LinkedHashMap<String, String> linkedHashMap, String pidKey) {
