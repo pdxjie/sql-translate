@@ -32,16 +32,15 @@ public class TransFromServiceImpl implements TransFromService {
      */
     @Override
     public Result<?> transformSql(TransFromVo transFrom) throws Exception {
-        Map<String, Object> result = new HashMap<>();
         if (StringUtils.isEmpty(transFrom.getType())) {
             return Result.fail(ResponseCode.PLEASE_SELECT_NEED_TRANSFORM_TYPE);
         }
         // 根据类型获取 SQL
-        if ("1".equalsIgnoreCase(transFrom.getType())) {
+        if (INSERT_TYPE.equalsIgnoreCase(transFrom.getType())) {
             return getInsertSql(transFrom.getTextarea(), transFrom.getDomains());
-        } else if ("2".equalsIgnoreCase(transFrom.getType())) {
+        } else if (UPDATE_TYPE.equalsIgnoreCase(transFrom.getType())) {
             return getUpdateSql(transFrom.getTextarea(), transFrom.getDomains());
-        } else if ("3".equalsIgnoreCase(transFrom.getType())) {
+        } else if (CREATE_TYPE.equalsIgnoreCase(transFrom.getType())) {
             return getCreateSql(transFrom.getTextarea(), transFrom.getDomains());
         }
         return Result.fail(ResponseCode.FAIL);
@@ -60,7 +59,7 @@ public class TransFromServiceImpl implements TransFromService {
         JSONObject jsonObject = JSONObject.parseObject(textarea);
         if (replaceForms.isEmpty()) {
             // 判断是否存在表名
-            if (!jsonObject.keySet().contains(TABLE_NAME)) {
+            if (!jsonObject.containsKey(TABLE_NAME)) {
                 return Result.fail(ResponseCode.PLEASE_SET_UP_TABLE_NAME);
             } else {
                 createTable.append("`").append(jsonObject.get(TABLE_NAME).toString()).append("`(");
@@ -142,15 +141,15 @@ public class TransFromServiceImpl implements TransFromService {
             }
         } else {
             Map<String, String> replaceMap = new HashMap<>();
-            replaceForms.stream().forEach(replaceForm -> {
+            replaceForms.forEach(replaceForm -> {
                 replaceMap.put(replaceForm.getOldVal(), replaceForm.getNewVal());
             });
             // children 不能修改
-            if (replaceMap.keySet().contains(CHILDREN_FILED)) {
+            if (replaceMap.containsKey(CHILDREN_FILED)) {
                 return Result.fail(ResponseCode.DEFAULT_ATTRIBUTE_UNABLE_TO_CHANGED);
             }
             // 判断是否存在表名
-            if (!jsonObject.keySet().contains(TABLE_NAME)) {
+            if (!jsonObject.containsKey(TABLE_NAME)) {
                 return Result.fail(ResponseCode.PLEASE_SET_UP_TABLE_NAME);
             } else {
                 createTable.append("`").append(jsonObject.get(TABLE_NAME).toString()).append("`(");

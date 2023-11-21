@@ -18,4 +18,10 @@ public class FiledConstant {
 
     public static final String FILED_AID = "@";
 
+    public static final String INSERT_TYPE = "1";
+
+    public static final String UPDATE_TYPE = "2";
+
+    public static final String CREATE_TYPE = "3";
+
 }
