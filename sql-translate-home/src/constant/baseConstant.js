@@ -14,3 +14,5 @@ export const INSERT = '1'
 export const UPDATE = '2'
 
 export const INIT = '3'
+
+export const SUCCESS_CODE = 200
