@@ -10,60 +10,60 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author 派 大 星
- * @function
- * @date 2022/9/26 22:54
- * @website https://blog.csdn.net/Gaowumao
+ * @Author: IT 派同学
+ * @DateTime: 2023/11/20
+ * @Description: 抽离方法
  */
 @Slf4j
 public class TranslationOperate {
 
 
     /**
-     * JsonObject递归替换属性
-     * 当@pid所指向的字段被替换，那么@pid的value也将随之被替换
+     * JsonObject 递归替换属性
+     * 当 @pid 所指向的字段被替换，那么 @pid 的 value 也将随之被替换
+     *
      * @param replaceMap
      * @param jsonObject
      * @return
      */
     public static JSONObject replaceFields(Map<String, String> replaceMap, JSONObject jsonObject) {
-        //如果不包含子集 也就是 是否包含children
-        if (!jsonObject.keySet().contains("children")){
+        // 如果不包含子集 也就是 是否包含 children
+        if (!jsonObject.containsKey("children")) {
             //替换属性
             JSONObject result = new JSONObject();
             for (String key : jsonObject.keySet()) {
                 for (String Jkey : replaceMap.keySet()) {
-                    if (key.equals(Jkey)){
-                        result.put(key.replace(Jkey, replaceMap.get(Jkey)),jsonObject.get(key));
+                    if (key.equals(Jkey)) {
+                        result.put(key.replace(Jkey, replaceMap.get(Jkey)), jsonObject.get(key));
                         break;
-                    }else {
-                        result.put(key,jsonObject.get(key));
+                    } else {
+                        result.put(key, jsonObject.get(key));
                         break;
                     }
                 }
             }
             jsonObject = result;
-        }else {
+        } else {
             JSONObject result = new JSONObject();
             if ("[]".equals(jsonObject.getString("children"))) {
                 jsonObject.remove("children");
                 for (String key : jsonObject.keySet()) {
                     for (String Jkey : replaceMap.keySet()) {
-                        //判断替换属性时是否指定pid值，如果指定pid中的属性，需要同时替换
-                        if ("@pid".equals(key)){
-                            if (Jkey.equals(jsonObject.getString(key))){
-                                result.put("@pid",replaceMap.get(Jkey));
+                        // 判断替换属性时是否指定 pid 值，如果指定 pid 中的属性，需要同时替换
+                        if ("@pid".equals(key)) {
+                            if (Jkey.equals(jsonObject.getString(key))) {
+                                result.put("@pid", replaceMap.get(Jkey));
                             }
                         }
-                        if (key.equals(Jkey)){
-                            result.put(key.replace(Jkey, replaceMap.get(Jkey)),jsonObject.get(key));
+                        if (key.equals(Jkey)) {
+                            result.put(key.replace(Jkey, replaceMap.get(Jkey)), jsonObject.get(key));
                             break;
-                        }else {
-                            if (!"@pid".equals(key)){
-                                if (replaceMap.keySet().contains(key)){
+                        } else {
+                            if (!"@pid".equals(key)) {
+                                if (replaceMap.keySet().contains(key)) {
                                     continue;
-                                }else {
-                                    result.put(key,jsonObject.get(key));
+                                } else {
+                                    result.put(key, jsonObject.get(key));
                                     break;
                                 }
                             }
@@ -71,27 +71,27 @@ public class TranslationOperate {
                     }
                 }
                 jsonObject = result;
-            }else {
+            } else {
                 JSONObject child = new JSONObject();
                 JSONArray jsonArray = JSONArray.parseArray(jsonObject.get("children").toString());
                 jsonObject.remove("children");
                 for (String key : jsonObject.keySet()) {
                     for (String Jkey : replaceMap.keySet()) {
-                        //判断替换属性时是否指定pid值，如果指定pid中的属性，需要同时替换
-                        if ("@pid".equals(key)){
-                            if (Jkey.equals(jsonObject.getString(key))){
-                                result.put("@pid",replaceMap.get(Jkey));
+                        // 判断替换属性时是否指定 pid 值，如果指定 pid 中的属性，需要同时替换
+                        if ("@pid".equals(key)) {
+                            if (Jkey.equals(jsonObject.getString(key))) {
+                                result.put("@pid", replaceMap.get(Jkey));
                             }
                         }
-                        if (key.equals(Jkey)){
-                            result.put(key.replace(Jkey, replaceMap.get(Jkey)),jsonObject.get(key));
+                        if (key.equals(Jkey)) {
+                            result.put(key.replace(Jkey, replaceMap.get(Jkey)), jsonObject.get(key));
                             break;
-                        }else {
-                            if (!"@pid".equals(key)){
-                                if (replaceMap.keySet().contains(key)){
+                        } else {
+                            if (!"@pid".equals(key)) {
+                                if (replaceMap.containsKey(key)) {
                                     continue;
-                                }else {
-                                    result.put(key,jsonObject.get(key));
+                                } else {
+                                    result.put(key, jsonObject.get(key));
                                     break;
                                 }
                             }
@@ -104,7 +104,7 @@ public class TranslationOperate {
                     JSONObject replaceFields = replaceFields(replaceMap, children);
 
                     list.add(replaceFields);
-                    result.put("children",list);
+                    result.put("children", list);
                 }
                 child = result;
                 jsonObject = child;
@@ -116,135 +116,136 @@ public class TranslationOperate {
 
     /**
      * 获取子语句
-     * @param pid pid值
+     *
+     * @param pid           pid 值
      * @param resultArray
      * @param linkedHashMap
-     * @param pidKey pid对应的key
+     * @param pidKey        pid对应的 key
      * @return
      */
     public static String getChildrenSql(String pid, JSONArray resultArray, LinkedHashMap<String, String> linkedHashMap, String pidKey) {
         int index = 0;
-        String resultSql = "";
-        if (resultArray.toString().contains("children")){
+        StringBuilder resultSql = new StringBuilder();
+        if (resultArray.toString().contains("children")) {
             int length = 0;
             int resultLength = resultArray.size();
             for (Object result : resultArray) {
                 JSONObject jsonObject = JSONObject.parseObject(result.toString());
-                if ("[]".equals(jsonObject.get("children").toString())){
-                    length+=1;
+                if ("[]".equals(jsonObject.get("children").toString())) {
+                    length += 1;
                     String valueSql = "( ";
                     int count = linkedHashMap.keySet().size();
                     index = 0;
                     for (String pKey : linkedHashMap.keySet()) {
                         index += 1;
                         for (String key : jsonObject.keySet()) {
-                            if (pKey.equals(key)){//按顺序拼接
-                                if ((index + 1) - count == 1 && (length+1) - resultLength == 1){
-                                    valueSql+="\'"+jsonObject.getString(key)+"\'),";
+                            if (pKey.equals(key)) {//按顺序拼接
+                                if ((index + 1) - count == 1 && (length + 1) - resultLength == 1) {
+                                    valueSql += "\'" + jsonObject.getString(key) + "\'),";
                                     break;
-                                }else if ((index + 1) - count == 1){
-                                    valueSql+="\'"+jsonObject.getString(key)+"\'),";
+                                } else if ((index + 1) - count == 1) {
+                                    valueSql += "\'" + jsonObject.getString(key) + "\'),";
                                     break;
-                                }else {
-                                    valueSql+="\'"+jsonObject.getString(key)+"\',";
+                                } else {
+                                    valueSql += "\'" + jsonObject.getString(key) + "\',";
                                     break;
                                 }
-                            }else if ("pid".equals(pKey)){
-                                if ((index + 1) - count == 1 && (length+1) - resultLength == 1){
-                                    valueSql+="\'"+pid+"\'),";
+                            } else if ("pid".equals(pKey)) {
+                                if ((index + 1) - count == 1 && (length + 1) - resultLength == 1) {
+                                    valueSql += "\'" + pid + "\'),";
                                     break;
-                                }else if ((index + 1) - count == 1){
-                                    valueSql+="\'"+pid+"\'),";
+                                } else if ((index + 1) - count == 1) {
+                                    valueSql += "\'" + pid + "\'),";
                                     break;
-                                }else {
-                                    valueSql+="\'"+pid+"\',";
+                                } else {
+                                    valueSql += "\'" + pid + "\',";
                                     break;
                                 }
                             }
                         }
                     }
-                    resultSql+=valueSql;
-                }else {
+                    resultSql.append(valueSql);
+                } else {
                     JSONArray jsonArray = new JSONArray();
                     jsonArray = (JSONArray) jsonObject.get("children");
                     jsonObject.remove("children");
-                    length+=1;
-                    String valueSql = "( ";
+                    length += 1;
+                    StringBuilder valueSql = new StringBuilder("( ");
                     int count = linkedHashMap.keySet().size();
                     index = 0;
                     for (String pKey : linkedHashMap.keySet()) {
                         index += 1;
                         for (String key : jsonObject.keySet()) {
-                            if (pKey.equals(key)){//按顺序拼接
-                                if ((index + 1) - count == 1 && (length+1) - resultLength == 1){
-                                    valueSql+="\'"+jsonObject.getString(key)+"\'),";
+                            if (pKey.equals(key)) {//按顺序拼接
+                                if ((index + 1) - count == 1 && (length + 1) - resultLength == 1) {
+                                    valueSql.append("\'").append(jsonObject.getString(key)).append("\'),");
                                     break;
-                                }else if ((index + 1) - count == 1){
-                                    valueSql+="\'"+jsonObject.getString(key)+"\'),";
+                                } else if ((index + 1) - count == 1) {
+                                    valueSql.append("\'").append(jsonObject.getString(key)).append("\'),");
                                     break;
-                                }else {
-                                    valueSql+="\'"+jsonObject.getString(key)+"\',";
+                                } else {
+                                    valueSql.append("\'").append(jsonObject.getString(key)).append("\',");
                                     break;
                                 }
-                            }else if ("pid".equals(pKey)){
-                                if ((index + 1) - count == 1 && (length+1) - resultLength == 1){
-                                    valueSql+="\'"+pid+"\'),";
+                            } else if ("pid".equals(pKey)) {
+                                if ((index + 1) - count == 1 && (length + 1) - resultLength == 1) {
+                                    valueSql.append("\'").append(pid).append("\'),");
                                     break;
-                                }else if ((index + 1) - count == 1){
-                                    valueSql+="\'"+pid+"\'),";
+                                } else if ((index + 1) - count == 1) {
+                                    valueSql.append("\'").append(pid).append("\'),");
                                     break;
-                                }else {
-                                    valueSql+="\'"+pid+"\',";
+                                } else {
+                                    valueSql.append("\'").append(pid).append("\',");
                                     break;
                                 }
                             }
                         }
                     }
-                    resultSql+=valueSql;
-                    resultSql+=getChildrenSql(jsonObject.getString(pidKey),jsonArray,linkedHashMap,pidKey);
+                    resultSql.append(valueSql);
+                    resultSql.append(getChildrenSql(jsonObject.getString(pidKey), jsonArray, linkedHashMap, pidKey));
                 }
             }
-        }else {
+        } else {
             int length = 0;
             int resultLength = resultArray.size();
             for (Object result : resultArray) {
-                length+=1;
-                String valueSql = "( ";
+                length += 1;
+                StringBuilder valueSql = new StringBuilder("( ");
                 JSONObject jsonObject = JSONObject.parseObject(result.toString());
-                //判断子json中是否包含children字段 如果存在则判断是否存在值
+                // 判断子 json 中是否包含 children 字段 如果存在则判断是否存在值
                 int count = linkedHashMap.keySet().size();
                 index = 0;
                 for (String pKey : linkedHashMap.keySet()) {
                     index += 1;
                     for (String key : jsonObject.keySet()) {
-                        if (pKey.equals(key)){//按顺序拼接
-                            if ((index + 1) - count == 1 && (length+1) - resultLength == 1){
-                                valueSql+="\'"+jsonObject.getString(key)+"\'),";
+                        if (pKey.equals(key)) { // 按顺序拼接
+                            if ((index + 1) - count == 1 && (length + 1) - resultLength == 1) {
+                                valueSql.append("\'").append(jsonObject.getString(key)).append("\'),");
                                 break;
-                            }else if ((index + 1) - count == 1){
-                                valueSql+="\'"+jsonObject.getString(key)+"\'),";
+                            } else if ((index + 1) - count == 1) {
+                                valueSql.append("\'").append(jsonObject.getString(key)).append("\'),");
                                 break;
-                            }else {
-                                valueSql+="\'"+jsonObject.getString(key)+"\',";
+                            } else {
+                                valueSql.append("\'").append(jsonObject.getString(key)).append("\',");
                                 break;
                             }
-                        }else if ("pid".equals(pKey)){
-                            if ((index + 1) - count == 1 && (length+1) - resultLength == 1){
-                                valueSql+="\'"+pid+"\'),";
+                        } else if ("pid".equals(pKey)) {
+                            if ((index + 1) - count == 1 && (length + 1) - resultLength == 1) {
+                                valueSql.append("\'").append(pid).append("\'),");
                                 break;
-                            }else if ((index + 1) - count == 1){
-                                valueSql+="\'"+pid+"\'),";
+                            } else if ((index + 1) - count == 1) {
+                                valueSql.append("\'").append(pid).append("\'),");
                                 break;
-                            }else {
-                                valueSql+="\'"+pid+"\',";
+                            } else {
+                                valueSql.append("\'").append(pid).append("\',");
                                 break;
                             }
                         }
                     }
                 }
-                resultSql+=valueSql;
+                resultSql.append(valueSql);
             }
         }
-        return resultSql;
+        return resultSql.toString();
     }
 }
